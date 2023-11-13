@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ScrollToBottom from "react-scroll-to-bottom";
 
-function Chat({ socket, username, room }) {
+function Chat({ socket, username, room, AIName, AIBackground, AIRole }) {
     const [currentMessage, setCurrentMessage] = useState("");
     const [messageList, setMessageList] = useState([]);
 
@@ -17,21 +17,29 @@ function Chat({ socket, username, room }) {
             new Date(Date.now()).getMinutes(),
         };
 
-        await socket.emit("send_message", messageData);
+        await socket.emit("send_message", [...messageList, messageData]);
         setMessageList((list) => [...list, messageData]);
         setCurrentMessage("");
         }
     };
 
     useEffect(() => {
-        console.log("hi once");
-
         const receiveMessageHandler = (data) => {
-            setMessageList((list) => [...list, data]);
+            const aiMessage = {
+                room: room,
+                author: AIName,
+                message: data.message.content,
+                time: new Date(Date.now()).getHours() +
+                ":" +
+                new Date(Date.now()).getMinutes(),
+            }
+            console.log(data)
+            console.log(aiMessage)
+            setMessageList((list) => [...list, aiMessage]);
         };
-
+    
         socket.on("receive_message", receiveMessageHandler);
-
+    
         return () => {
             socket.off("receive_message", receiveMessageHandler);
         };
@@ -44,11 +52,12 @@ function Chat({ socket, username, room }) {
         </div>
         <div className="chat-body">
             <ScrollToBottom className="message-container">
-            {messageList.map((messageContent) => {
+            {messageList.map((messageContent, index) => {
                 return (
                 <div
                     className="message"
                     id={username === messageContent.author ? "you" : "other"}
+                    key={index}
                 >
                     <div>
                     <div className="message-content">
