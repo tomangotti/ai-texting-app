@@ -69,42 +69,53 @@ const io = new Server(server, {
         methods: ["GET", "POST"],
     },
 });
+// const secrets = require("../config/secrets.js")
 
-const openai = new OpenAI({ apiKey: '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' });
+// const key = secrets.openai_api_key
+const openai = new OpenAI({ apiKey: shhhh});
 
 app.use(cors());
 
 io.on("connection", (socket) => {
     socket.removeAllListeners();
     console.log(`User Connected: ${socket.id}`);
+    
 
     socket.on("join_room", async (data) => {
         socket.join(data.room);
         console.log(`User with ID: ${socket.id} joined room: ${data.room}`);
-
+    
         const response = await aiChat(data.ai_info, null)
         socket.emit("receive_message", response);
     });
 
-    socket.on("send_message", (data) => {
-        
-        const newMessage = {
-            role: 'user',
-            content: data.message
-        }
-        let n = data.length - 1
-        // aiChat(newMessage);
-        socket.to(data[n].room).emit("receive_message", data[n]);
+
+    socket.on("send_message", async (data) => {
+        console.log(data)
+        const newMessages = data[0].map((message) => {
+            if(message.author !== data[1].ai_name){
+                return {
+                    role: "user",
+                    content: message.message
+                }
+            } else {
+                return {
+                    role: "assistant",
+                    content: message.message
+                }
+            }
+        })
+        console.log(newMessages)
+        const response = await aiChat(data[1], newMessages);
+        socket.emit("receive_message", response);
     });
 
-    socket.on("ai_chat_message", (data) => {
-        console.log(data);
-        
-    });
 
     socket.on("disconnect", () => {
         console.log("User Disconnected", socket.id);
     });
+
+
 });
 
 server.listen(3001, () => {
@@ -115,12 +126,15 @@ server.listen(3001, () => {
 
 async function aiChat(ai_info, newMessage) {
     if (newMessage) {
+        const logEntry = [
+            {role: "system", content: `You're name ${ai_info.ai_name} is are a helpful ${ai_info.ai_role}`},
+            {role: "system", content: `You're background is ${ai_info.ai_background}`},
+        ]
+        newMessage.forEach((mess) => {
+            logEntry.push(mess)
+        });
         const completion = await openai.chat.completions.create({
-            messages: [
-                        {role: "system", content: `You're name ${ai_info.ai_name} is are a helpful ${ai_info.ai_role}`},
-                        {role: "system", content: `You're background is ${ai_info.ai_background}`},
-                        newMessage,
-                    ],
+            messages: logEntry,
             model: "gpt-3.5-turbo",
         });
     

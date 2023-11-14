@@ -11,19 +11,19 @@ function App() {
   const [showChat, setShowChat] = useState(false);
   
   const [AIName, setAIName] = useState("");
-  const [AIBackGround, setAIBackGround] = useState("");
+  const [AIBackground, setAIBackground] = useState("");
   const [AIRole, setAIRole] = useState("");
 
   
 
   const joinRoom = () => {
-    if (username !== "" && room !== "" && AIName !== "" && AIBackGround !== "" && AIRole !== "") {
+    if (username !== "" && room !== "" && AIName !== "" && AIBackground !== "" && AIRole !== "") {
       const data = {
         room: room,
         ai_info: {
           ai_name: AIName,
           ai_role: AIRole,
-          ai_background: AIBackGround
+          ai_background: AIBackground
         },
         
       }
@@ -42,11 +42,11 @@ function App() {
           <input type="text" placeholder="Enter Room ID" onChange={(event) => {setRoom(event.target.value);}} />
           <input type="text" placeholder="Enter AI Name" onChange={(event) => {setAIName(event.target.value);}} />
           <input type="text" placeholder="Enter AI Role" onChange={(event) => {setAIRole(event.target.value);}} />
-          <input type="text" placeholder="Enter AI Background" onChange={(event) => {setAIBackGround(event.target.value);}} />
+          <input type="text" placeholder="Enter AI Background" onChange={(event) => {setAIBackground(event.target.value);}} />
           <button onClick={joinRoom}>Join A Room</button>
         </div>
       ) : (
-        <Chat socket={socket} username={username} room={room} AIName={AIName} AIBackGround={AIBackGround} AIRole={AIRole}  />
+        <Chat socket={socket} username={username} room={room} AIName={AIName} AIBackground={AIBackground} AIRole={AIRole}  />
       )}
     </div>
   );

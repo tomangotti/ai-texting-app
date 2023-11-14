@@ -16,15 +16,22 @@ function Chat({ socket, username, room, AIName, AIBackground, AIRole }) {
             ":" +
             new Date(Date.now()).getMinutes(),
         };
+        const list = [...messageList, messageData]
+        const ai_info = {
+            ai_name: AIName,
+            ai_role: AIRole,
+            ai_background: AIBackground
+        }
 
-        await socket.emit("send_message", [...messageList, messageData]);
-        setMessageList((list) => [...list, messageData]);
+        await socket.emit("send_message", [list, ai_info]);
+        setMessageList(list);
         setCurrentMessage("");
         }
     };
 
     useEffect(() => {
         const receiveMessageHandler = (data) => {
+            console.log(data)
             const aiMessage = {
                 room: room,
                 author: AIName,
