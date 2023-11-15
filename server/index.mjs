@@ -72,7 +72,7 @@ const io = new Server(server, {
 // const secrets = require("../config/secrets.js")
 
 // const key = secrets.openai_api_key
-const openai = new OpenAI({ apiKey: shhhh});
+const openai = new OpenAI({ apiKey: test});
 
 app.use(cors());
 
@@ -86,9 +86,15 @@ io.on("connection", (socket) => {
         console.log(`User with ID: ${socket.id} joined room: ${data.room}`);
     
         const response = await aiChat(data.ai_info, null)
-        socket.emit("receive_message", response);
+        socket.emit(`receive_message_${data.room}`, response);
     });
 
+
+    socket.on("generate_characters", async (data) => {
+        console.log(data)
+        const response = await aiCharacterGenerater(data)
+        socket.emit("return_characters", response)
+    })
 
     socket.on("send_message", async (data) => {
         console.log(data)
@@ -107,7 +113,7 @@ io.on("connection", (socket) => {
         })
         console.log(newMessages)
         const response = await aiChat(data[1], newMessages);
-        socket.emit("receive_message", response);
+        socket.emit(`receive_message_${data[0][0].room}`, response);
     });
 
 
@@ -153,5 +159,24 @@ async function aiChat(ai_info, newMessage) {
         console.log(completion.choices[0]);
         return completion.choices[0]
     }
+    
+}
+
+
+async function aiCharacterGenerater(data) {
+    
+    const logEntry = [
+        {role: "system", content: `You are a helpful assistant to creating characters in a custom world and setting that the user will give you.`},
+        {role: "system", content: `can you return each character that you create in an array of objects with each object having a name, role, and background information.`},
+        {role: "user", content: `Can you create me ${data.number} of characters in the setting of ${data.setting}`}
+    ]
+    
+    const completion = await openai.chat.completions.create({
+        messages: logEntry,
+        model: "gpt-3.5-turbo",
+    });
+
+    console.log(completion.choices[0]);
+    return completion.choices[0] 
     
 }

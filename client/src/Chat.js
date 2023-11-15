@@ -45,17 +45,17 @@ function Chat({ socket, username, room, AIName, AIBackground, AIRole }) {
             setMessageList((list) => [...list, aiMessage]);
         };
     
-        socket.on("receive_message", receiveMessageHandler);
+        socket.on(`receive_message_${room}`, receiveMessageHandler);
     
         return () => {
-            socket.off("receive_message", receiveMessageHandler);
+            socket.off(`receive_message_${room}`, receiveMessageHandler);
         };
     }, []);
 
     return (
         <div className="chat-window">
         <div className="chat-header">
-            <p>Live Chat</p>
+            <p>Live Chat {room}</p>
         </div>
         <div className="chat-body">
             <ScrollToBottom className="message-container">
@@ -63,12 +63,12 @@ function Chat({ socket, username, room, AIName, AIBackground, AIRole }) {
                 return (
                 <div
                     className="message"
-                    id={username === messageContent.author ? "you" : "other"}
+                    id={username === messageContent.author ? "other" : "you"}
                     key={index}
                 >
                     <div>
                     <div className="message-content">
-                        <p>{messageContent.message}</p>
+                        <p>{messageContent.message} + {messageContent.room}</p>
                     </div>
                     <div className="message-meta">
                         <p id="time">{messageContent.time}</p>

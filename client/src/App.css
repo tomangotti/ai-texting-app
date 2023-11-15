@@ -51,8 +51,8 @@ body {
 }
 
 .chat-window {
-  width: 500px;
-  height: 420px;
+  width: 600px;
+  height: 200px;
 }
 
 .chat-window p {
@@ -74,7 +74,7 @@ body {
 }
 
 .chat-window .chat-body {
-  height: calc(450px - (45px + 70px));
+  height: calc(300px - (45px + 70px));
   border: 1px solid #263238;
   background: #fff;
 
@@ -100,7 +100,7 @@ body {
   width: auto;
   height: auto;
   min-height: 40px;
-  max-width: 220px;
+  max-width: 350px;
   background-color: #43a047;
   border-radius: 5px;
   color: white;
@@ -189,3 +189,5 @@ body {
 .hide {
   opacity: 0 !important;
 }
+
+
