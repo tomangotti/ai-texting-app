@@ -30,6 +30,7 @@ function Chat({ socket, username, room, AIName, AIBackground, AIRole }) {
     };
 
     useEffect(() => {
+        console.log("mounted")
         const receiveMessageHandler = (data) => {
             console.log(data)
             const aiMessage = {
@@ -48,9 +49,10 @@ function Chat({ socket, username, room, AIName, AIBackground, AIRole }) {
         socket.on(`receive_message_${room}`, receiveMessageHandler);
     
         return () => {
+            console.log("unmounted")
             socket.off(`receive_message_${room}`, receiveMessageHandler);
         };
-    }, []);
+    }, [socket, room]);
 
     return (
         <div className="chat-window">
