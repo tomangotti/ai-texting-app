@@ -4,7 +4,11 @@ import http from "http";
 import cors from "cors";
 import { Server } from "socket.io";
 import OpenAI from "openai";
-require("dotenv").config();
+import dotenv from 'dotenv';
+
+dotenv.config({path: '../.env'});
+console.log(process.env.OPENAI_API_KEY);
+
 
 const app = express();
 const server = http.createServer(app);
@@ -14,11 +18,10 @@ const io = new Server(server, {
         methods: ["GET", "POST"],
     },
 });
-// const secrets = require("../config/secrets.js")
+const openAIApiKey = process.env.API_KEY || process.env.OPENAI_API_KEY;
 
-// const key = secrets.openai_api_key
-const apiKey = process.env.OPENAI_API_KEY
-const openai = new OpenAI({ apiKey: apiKey});
+
+const openai = new OpenAI({ apiKey: openAIApiKey });
 
 app.use(cors());
 
