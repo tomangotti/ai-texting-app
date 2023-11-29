@@ -115,15 +115,14 @@ function App() {
   const [username, setUsername] = useState("");
   const [showGenerateForm, setShowGenerateForm] = useState(true);
   const [characterList, setCharacterList] = useState([]);
-   const [setting, setSetting] = useState("")
+  const [setting, setSetting] = useState("")
   const [numberOfCharacters, setNumberOfCharacters] = useState("");
-
+  const [generating, setGenerating] = useState(false)
 
   useEffect(() => {
     const handleCharacters = (data) => {
       const characterString = data.message.content;
       const characters = characterString.split(/\d+\.\s+/).filter(Boolean);
-
       const characterObjects = [];
 
       for (let i = 1; i < characters.length; i++) {
@@ -146,7 +145,7 @@ function App() {
       }
 
       setCharacterList(characterObjects);
-      setShowGenerateForm(false); // Update state to switch to chat room display
+      setShowGenerateForm(false);
     };
 
     socket.on("return_characters", handleCharacters);
@@ -154,7 +153,7 @@ function App() {
     return () => {
       socket.off("return_characters", handleCharacters);
     };
-  }, []); // No need to include showGenerateForm in the dependency array
+  }, []);
 
   const handleGenerate = () => {
     const data = {
@@ -162,6 +161,7 @@ function App() {
       setting: setting,
     };
     console.log(data);
+    setGenerating(true)
     socket.emit("generate_characters", data);
   };
 
@@ -212,7 +212,7 @@ function App() {
               The more information you provide in the setting input will only
               give the AI more information to create these characters.
             </p>
-            <button onClick={handleGenerate}>Generate</button>
+            <button onClick={handleGenerate} disabled={generating}>{generating ? "Loading" : "Generate"}</button>
           </div>
         </>
       ) : (
