@@ -104,13 +104,15 @@
 
 // export default App;
 
+
+
 // App.js
 import "./App.css";
 import io from "socket.io-client";
 import { useState, useEffect } from "react";
 import Chat from "./Chat";
 
-const socket = io.connect("http://localhost:3001");
+const socket = io.connect("https://ai-chat-backend-7zu4.onrender.com");
 function App() {
   const [username, setUsername] = useState("");
   const [showGenerateForm, setShowGenerateForm] = useState(true);
