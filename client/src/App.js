@@ -213,6 +213,7 @@ function App() {
               give the AI more information to create these characters.
             </p>
             <button onClick={handleGenerate} disabled={generating}>{generating ? "Loading" : "Generate"}</button>
+            {generating ? <p>Generating characters... This can take a moment so please wait. Thank you</p> : null}
           </div>
         </>
       ) : (
