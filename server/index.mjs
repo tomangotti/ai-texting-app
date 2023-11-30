@@ -13,8 +13,9 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: "https://ai-character-generator.onrender.com/",
+        origin: "https://ai-character-generator.onrender.com",
         methods: ["GET", "POST"],
+        credentials: true
     },
 });
 const openAIApiKey = process.env.API_KEY || process.env.OPENAI_API_KEY;
@@ -72,7 +73,7 @@ io.on("connection", (socket) => {
 
 });
 
-server.listen(3001, () => {
+server.listen(3000, () => {
     console.log("SERVER RUNNING");
 });
 
